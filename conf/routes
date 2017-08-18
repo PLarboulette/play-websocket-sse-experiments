@@ -3,10 +3,13 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-# An example controller showing a sample home page
-GET     /                           controllers.Assets.at(path = "/public", file = "index.html")
+GET     /                           controllers.Assets.at(path = "/public", file = "chat.html")
+GET     /beers                      controllers.Assets.at(path = "/public", file = "sse.html")
+GET     /chat                       controllers.Assets.at(path = "/public", file = "chat.html")
 
-# Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /sse                    controllers.HomeController.serverSideEvent()
+GET     /sse                        controllers.HomeController.serverSideEvent()
+
+GET     /socket.io/                 play.engineio.EngineIOController.endpoint(transport)
+POST    /socket.io/                 play.engineio.EngineIOController.endpoint(transport)
