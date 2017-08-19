@@ -21,6 +21,9 @@ trait MyApplication extends BuiltInComponents
 
   override def applicationLifecycle: DefaultApplicationLifecycle
 
+ /* lazy val chatEngineComplex: ChatEngineComplex = wire[ChatEngineComplex]
+  lazy val chatEngineComplexController: EngineIOController = chatEngineComplex.controller*/
+
   lazy val chatEngine: ChatEngine = wire[ChatEngine]
   lazy val chatEngineController: EngineIOController = chatEngine.controller
 

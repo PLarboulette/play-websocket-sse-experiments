@@ -5,19 +5,21 @@ import akka.stream.scaladsl.{BroadcastHub, Flow, Keep, MergeHub}
 import play.engineio.EngineIOController
 import play.socketio.scaladsl.SocketIO
 
-
+/**
+  * A simple chat engine.
+  */
 class ChatEngine(socketIO: SocketIO)(implicit mat: Materializer) {
 
   import play.socketio.scaladsl.SocketIOEventCodec._
 
-  // This will decode String "message" events coming in
-  val decoder: SocketIOEventsDecoder[String] = decodeByName {
-    case "message" => decodeJson[String]
+  // This will decode String "chat message" events coming in
+  val decoder = decodeByName {
+    case "chat message" => decodeJson[String]
   }
 
   // This will encode String "chat message" events going out
-  val encoder: SocketIOEventsEncoder[String] = encodeByType[String] {
-    case _: String => "message" -> encodeJson[String]
+  val encoder = encodeByType[String] {
+    case _: String => "chat message" -> encodeJson[String]
   }
 
   private val chatFlow = {
@@ -27,11 +29,6 @@ class ChatEngine(socketIO: SocketIO)(implicit mat: Materializer) {
     // See http://doc.akka.io/docs/akka/snapshot/scala/stream/stream-dynamic.html
     // for details on these features.
     val (sink, source) = MergeHub.source[String]
-        .map {
-          message =>
-            println(message)
-            message
-        }
       .toMat(BroadcastHub.sink)(Keep.both).run
 
     // We couple the sink and source together so that one completes, the other
@@ -45,3 +42,4 @@ class ChatEngine(socketIO: SocketIO)(implicit mat: Materializer) {
     .addNamespace("/chat", decoder, encoder, chatFlow)
     .createController()
 }
+
